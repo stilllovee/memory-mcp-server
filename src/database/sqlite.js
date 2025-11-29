@@ -12,28 +12,13 @@ class TaskDatabase {
    * Initialize SQLite database for task management
    */
   initializeDatabase() {
-    const createSummariesTableSQL = `
+    this.db.run(`
+      DROP TABLE IF EXISTS summaries;
       CREATE TABLE IF NOT EXISTS summaries (
         summary_id TEXT PRIMARY KEY,
         content TEXT NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `;
-
-    this.db.run('DROP TABLE IF EXISTS summaries', (err) => {
-      if (err) {
-        console.error('[MCP Server] Error dropping summaries table:', err);
-      } else {
-        console.error('[MCP Server] Summaries table dropped for migration');
-        this.db.run(createSummariesTableSQL, (err) => {
-          if (err) {
-            console.error('[MCP Server] Error creating summaries table:', err);
-          } else {
-            console.error('[MCP Server] Summaries table initialized with new schema');
-          }
-        });
-      }
-    });
+      )`);
   }
 
   /**
