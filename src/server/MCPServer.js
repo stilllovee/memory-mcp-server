@@ -3,9 +3,8 @@ const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio
 const { CallToolRequestSchema, ListToolsRequestSchema, InitializeRequestSchema } = require('@modelcontextprotocol/sdk/types.js');
 const { randomUUID } = require('crypto');
 
-const { TaskDatabase } = require('../database/sqlite');
-const { generateRandomString } = require('../tools/utils');
-const { TaskManager } = require('../tools/tasks');
+const { MemoryDatabase } = require('../database/sqlite');
+const { MemoryManager } = require('../tools/memory');
 
 const SESSION_ID_HEADER_NAME = 'mcp-session-id';
 const JSON_RPC = '2.0';
@@ -27,9 +26,8 @@ class MCPServer {
     // To support multiple simultaneous connections (for HTTP mode)
     this.transports = {};
 
-    // Initialize database and task manager
-    this.database = new TaskDatabase();
-    this.taskManager = new TaskManager(this.database);
+    this.database = new MemoryDatabase();
+    this.memoryManager = new MemoryManager(this.database);
 
     this.setupToolHandlers();
     this.setupErrorHandling();
@@ -78,11 +76,11 @@ class MCPServer {
 
       try {
         if (name === 'save_summary') {
-          return await this.taskManager.saveFinalSummary(args.summary);
+          return await this.memoryManager.saveFinalSummary(args.summary);
         }
 
         if (name === 'get_summaries') {
-          return await this.taskManager.getSummaries(args.limit);
+          return await this.memoryManager.getSummaries(args.limit);
         }
       } catch (error) {
         console.error(`[MCP Server] Error executing tool ${name}:`, error);

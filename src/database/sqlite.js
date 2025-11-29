@@ -1,7 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-class TaskDatabase {
+class MemoryDatabase {
   constructor(dbPath = null) {
     this.dbPath = dbPath || path.join(process.cwd(), 'summaries.db');
     this.db = new sqlite3.Database(this.dbPath);
@@ -9,7 +9,7 @@ class TaskDatabase {
   }
 
   /**
-   * Initialize SQLite database for task management
+   * Initialize SQLite database
    */
   initializeDatabase() {
     this.db.run(`
@@ -83,5 +83,5 @@ class TaskDatabase {
 }
 
 module.exports = {
-  TaskDatabase,
+  MemoryDatabase: MemoryDatabase,
 };
