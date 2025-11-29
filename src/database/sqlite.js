@@ -13,7 +13,6 @@ class TaskDatabase {
    */
   initializeDatabase() {
     this.db.run(`
-      DROP TABLE IF EXISTS summaries;
       CREATE TABLE IF NOT EXISTS summaries (
         summary_id TEXT PRIMARY KEY,
         content TEXT NOT NULL,
